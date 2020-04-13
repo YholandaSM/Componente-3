@@ -56,20 +56,12 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
         Empleado empMod = (Empleado) bd.getObjectFromId(oid);
         try {
 
-           
-            if (emp.getCargo() != null) {
-                empMod.setCargo(emp.getCargo());
-            }
+            empMod.setCargo(emp.getCargo());
 
-            if (emp.getDireccion() != null) {
-                empMod.setDireccion(emp.getDireccion());
-            }
-            
-            if (emp.getTelefono() != null) {
-                empMod.setTelefono(emp.getTelefono());
-            }
+            empMod.setDireccion(emp.getDireccion());
 
-           
+            empMod.setTelefono(emp.getTelefono());
+
             bd.store(empMod); // actualiza el objeto 
             valor = true;
             bd.commit();

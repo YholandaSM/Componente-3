@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pojos.Empleado;
 
 /**
@@ -80,11 +82,11 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
         PreparedStatement sentencia;
         try {
             sentencia = conexion.prepareStatement(sql);
-            sentencia.setInt(5, numemp);
+            sentencia.setInt(4, numemp);
            
-            sentencia.setString(2, emp.getCargo());
-            sentencia.setString(3, emp.getTelefono());
-            sentencia.setString(4, emp.getDireccion());
+            sentencia.setString(1, emp.getCargo());
+            sentencia.setString(2, emp.getTelefono());
+            sentencia.setString(3, emp.getDireccion());
             int filas = sentencia.executeUpdate();
             //System.out.printf("Filas modificadas: %d%n", filas);
             if (filas > 0) {
@@ -101,7 +103,7 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
     @Override
     public Empleado consultarEmp(int numemp) {
         String sql = "SELECT emp_no,nombre,cargo,direccion,telefono FROM empleados"
-                + " where emp_no=?";
+                + " where emp_no=? order by emp_no";
         PreparedStatement sentencia;
         Empleado emp = new Empleado();
         try {
@@ -164,7 +166,11 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
 
     @Override
     public void cerrarConexion() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            conexion.close();
+        } catch (SQLException ex) {
+           System.out.println("Error al cerrar conexión "+ex.getMessage()+"-- "+ex.getSQLState());
+        }
     }
 
     
