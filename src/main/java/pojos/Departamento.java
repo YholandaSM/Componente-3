@@ -1,7 +1,7 @@
 package pojos;
 
 /**
- *
+ * POJO para el objeto de negocio departamento, según el patrón DAO.
  * @author Hp
  */
  
@@ -42,6 +42,11 @@ public class Departamento implements Serializable{
 
     public void setLoc(String loc) {
         this.loc = loc;
+    }
+
+    @Override
+    public String toString() {
+        return "Departamento{" + "deptno=" + deptno + ", dnombre=" + dnombre + ", loc=" + loc + '}';
     }
     
     

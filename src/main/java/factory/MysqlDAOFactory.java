@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
+ * Clase con métodos para la conexión a Mysql
  *
  * @author Hp
  */
@@ -25,7 +26,11 @@ public class MysqlDAOFactory extends DAOFactory {
         URLDB = "jdbc:mysql://localhost:3308/fbaccesodatos";
     }
 
-    //Crear la conexión
+    /**
+     * Método que crea una conexión a una bbdd Mysql
+     *
+     * @return devuelve un objeto Connection
+     */
     public static Connection crearConexion() {
         if (conexion == null) {
             try {
@@ -45,15 +50,41 @@ public class MysqlDAOFactory extends DAOFactory {
         return conexion;
     }
 
-    @Override
-    public EmpleadoDAO getEmpleadoDAO() {
-        return new MysqlEmpleadoImpl();
+    /**
+     * Método para cerrar la conexión con la bbdd Mysql
+     */
+    public static void cerrarConexion() {
+        if (conexion != null) {
+            try {
+                conexion.close();
+                conexion = null;
+            } catch (SQLException ex) {
+                System.out.println("Error al cerrar conexión: " + ex.getMessage());
+            }
+        }
     }
 
+    /**
+     * Método que devuelve una instancia del objeto departamento
+     * que implementará los métodos definidos en la interfaz DepartamentoDAO() .
+     * de la interfaz
+     *
+     * @return
+     */
     @Override
     public DepartamentoDAO getDepartamentoDAO() {
         return new MysqlDepartamentoImpl();
     }
 
-   
+     /**
+     * Método que devuelve una instancia del objeto empleado que implementará
+     * los métodos definidos en la interfaz EmpleadoDAO() . de la interfaz
+     *
+     * @return
+     */
+    @Override
+    public EmpleadoDAO getEmpleadoDAO() {
+        return new MysqlEmpleadoImpl();
+    }
+
 }

@@ -5,7 +5,6 @@
  */
 package factory;
 
- 
 import daos.DepartamentoDAO;
 import daos.EmpleadoDAO;
 import implementaciones.departamento.OracleDepartamentoImpl;
@@ -51,16 +50,38 @@ public class OracleDAOFactory extends DAOFactory {
         return conexion;
     }
 
-   
-
-    @Override
-    public EmpleadoDAO getEmpleadoDAO() {
-        return new OracleEmpleadoImp( ); //To change body of generated methods, choose Tools | Templates.
+    public static void cerrarConexion() {
+        if (conexion != null) {
+            try {
+                conexion.close();
+                conexion = null;
+            } catch (SQLException ex) {
+                System.out.println("Error al cerrar conexión: " + ex.getMessage());
+            }
+        }
     }
 
+    /**
+     * Método que devuelve una instancia del objeto empleado que implementará
+     * los métodos definidos en la interfaz EmpleadoDAO() . de la interfaz
+     *
+     * @return
+     */
+    @Override
+    public EmpleadoDAO getEmpleadoDAO() {
+        return new OracleEmpleadoImp(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Método que devuelve una instancia del objeto departamento que
+     * implementará los métodos definidos en la interfaz DepartamentoDAO() . de
+     * la interfaz
+     *
+     * @return
+     */
     @Override
     public DepartamentoDAO getDepartamentoDAO() {
-        return new OracleDepartamentoImpl( ); //To change body of generated methods, choose Tools | Templates.
+        return new OracleDepartamentoImpl(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import pojos.Empleado;
 
 /**
+ * Clase que implementa los métodos de la interfaz del objeto empleado para
+ * interactuar con la bbdd Mysql
  *
  * @author Hp
  */
@@ -21,15 +23,22 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
     Connection conexion;
 
     public MysqlEmpleadoImpl() {
-        conexion = MysqlDAOFactory.crearConexion();
+
     }
 
+    /**
+     * Método que inserta un departamento en bbdd
+     *
+     * @param emp bean del empleado a insertar
+     * @return
+     */
     @Override
     public boolean insertarEmp(Empleado emp) {
+        conexion = MysqlDAOFactory.crearConexion();
         boolean valor = false;
         String sql = "INSERT INTO empleados (nombre,cargo,telefono,direccion) "
                 + "VALUES(?, ?, ?, ?)";
-        PreparedStatement sentencia;
+        PreparedStatement sentencia = null;
         try {
             sentencia = conexion.prepareStatement(sql);
             sentencia.setString(1, emp.getNombre());
@@ -40,21 +49,35 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
             //System.out.printf("Filas insertadas: %d%n", filas);
             if (filas > 0) {
                 valor = true;
-               
+
             }
-            sentencia.close();
 
         } catch (SQLException e) {
             mensajeExcepcion(e);
+        } finally {
+
+            try {
+                sentencia.close();
+                MysqlDAOFactory.cerrarConexion();
+            } catch (SQLException ex) {
+                Logger.getLogger(MysqlEmpleadoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return valor;
     }
 
+    /**
+     * Método que elimina un empleao de bbdd
+     *
+     * @param numemp número del epleado que se va a eliminar
+     * @return
+     */
     @Override
     public boolean eliminarEmp(int numemp) {
+        conexion = MysqlDAOFactory.crearConexion();
         boolean valor = false;
         String sql = "DELETE FROM empleados WHERE emp_no = ? ";
-        PreparedStatement sentencia;
+        PreparedStatement sentencia = null;
         try {
             sentencia = conexion.prepareStatement(sql);
             sentencia.setInt(1, numemp);
@@ -64,26 +87,40 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
                 valor = true;
                 System.out.printf("Empleado %d eliminado%n", numemp);
             }
-            sentencia.close();
+
         } catch (SQLException e) {
             mensajeExcepcion(e);
+        } finally {
+
+            try {
+                sentencia.close();
+                MysqlDAOFactory.cerrarConexion();
+            } catch (SQLException ex) {
+                Logger.getLogger(MysqlEmpleadoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return valor;
     }
 
+    /**
+     * Método que modifica un empleado
+     *
+     * @param numemp número del empleado a modificar
+     * @param emp empleado con los datos a modificar
+     * @return
+     */
     @Override
-    public boolean modificarEmp(int numemp, Empleado emp) {      
-            
+    public boolean modificarEmp(int numemp, Empleado emp) {
+        conexion = MysqlDAOFactory.crearConexion();
         boolean valor = false;
         String sql = "UPDATE empleados SET  cargo = ?, telefono=?, direccion= ?"
                 + " WHERE emp_no = ? ";
-        
-        
-        PreparedStatement sentencia;
+
+        PreparedStatement sentencia = null;
         try {
             sentencia = conexion.prepareStatement(sql);
             sentencia.setInt(4, numemp);
-           
+
             sentencia.setString(1, emp.getCargo());
             sentencia.setString(2, emp.getTelefono());
             sentencia.setString(3, emp.getDireccion());
@@ -93,23 +130,38 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
                 valor = true;
                 System.out.printf("Empleado %d modificado%n", numemp);
             }
-            sentencia.close();
+
         } catch (SQLException e) {
             mensajeExcepcion(e);
+        } finally {
+            try {
+                sentencia.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MysqlEmpleadoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            MysqlDAOFactory.cerrarConexion();
         }
         return valor;
     }
 
+    /**
+     * Método que busca en bbdd el empleado cuyo número se pasa por parámetro
+     *
+     * @param numemp número del empleado a consultar
+     * @return 
+     */
     @Override
     public Empleado consultarEmp(int numemp) {
+        conexion = MysqlDAOFactory.crearConexion();
         String sql = "SELECT emp_no,nombre,cargo,direccion,telefono FROM empleados"
                 + " where emp_no=? order by emp_no";
-        PreparedStatement sentencia;
+        PreparedStatement sentencia = null;
+        ResultSet rs = null;
         Empleado emp = new Empleado();
         try {
             sentencia = conexion.prepareStatement(sql);
             sentencia.setInt(1, numemp);
-            ResultSet rs = sentencia.executeQuery();
+            rs = sentencia.executeQuery();
             if (rs.next()) {
                 emp.setNumemp(rs.getInt("emp_no"));
                 emp.setNombre(rs.getString("nombre"));
@@ -120,24 +172,36 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
                 System.out.printf("Empleado: %d No existe%n", numemp);
             }
 
-            rs.close();// liberar recursos
-            sentencia.close();
-
         } catch (SQLException e) {
             mensajeExcepcion(e);
+        } finally {
+            try {
+                rs.close();// liberar recursos
+                sentencia.close();
+                MysqlDAOFactory.cerrarConexion();
+            } catch (SQLException ex) {
+                Logger.getLogger(MysqlEmpleadoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return emp;
     }
 
+    /**
+     * Método que lista todos los empleados que hay en bbdd
+     *
+     * @return devuelve un arraylist con todos los empelados
+     */
     @Override
     public ArrayList listarEmp() {
+        conexion = MysqlDAOFactory.crearConexion();
         String sql = "SELECT emp_no,nombre,cargo,direccion,telefono FROM empleados";
-        Statement sentencia;
+        Statement sentencia = null;
+        ResultSet rs = null;
         ArrayList<Empleado> listado = new ArrayList();
 
         try {
             sentencia = conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery(sql);
+            rs = sentencia.executeQuery(sql);
             while (rs.next()) {
                 Empleado emp = new Empleado();
                 emp.setNumemp(rs.getInt("emp_no"));
@@ -148,15 +212,25 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
                 listado.add(emp);
             }
 
-            rs.close();// liberar recursos
-            sentencia.close();
-
         } catch (SQLException e) {
             mensajeExcepcion(e);
+        } finally {
+            try {
+                rs.close();// liberar recursos
+                sentencia.close();
+                MysqlDAOFactory.cerrarConexion();
+            } catch (SQLException ex) {
+                Logger.getLogger(MysqlEmpleadoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listado;
     }
 
+    /**
+     * Método que imprime por consola las excepciones SQL
+     *
+     * @param e
+     */
     private void mensajeExcepcion(SQLException e) {
         System.out.printf("HA OCURRIDO UNA EXCEPCIÓN:%n");
         System.out.printf("Mensaje   : %s %n", e.getMessage());
@@ -164,14 +238,4 @@ public class MysqlEmpleadoImpl implements EmpleadoDAO {
         System.out.printf("Cód error : %s %n", e.getErrorCode());
     }
 
-    @Override
-    public void cerrarConexion() {
-        try {
-            conexion.close();
-        } catch (SQLException ex) {
-           System.out.println("Error al cerrar conexión "+ex.getMessage()+"-- "+ex.getSQLState());
-        }
-    }
-
-    
 }

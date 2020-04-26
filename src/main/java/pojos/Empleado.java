@@ -1,7 +1,7 @@
 package pojos;
 
 /**
- *
+ * POJO para el objeto de negocio EMPLEADO, según el patrón DAO.
  * @author Hp
  */
 public class Empleado {
