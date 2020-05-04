@@ -26,8 +26,7 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
     public NeodatisEmpleadoImp() {
 
     }
-    
-    
+
     /**
      * Método que inserta un departamento en bbdd
      *
@@ -46,8 +45,8 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
         }
         return true;
     }
-    
-     /**
+
+    /**
      * Método que elimina un empleao de bbdd
      *
      * @param numemp número del epleado que se va a eliminar
@@ -65,12 +64,14 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
             valor = true;
         } catch (IndexOutOfBoundsException i) {
             System.out.println("Empleado a eliminar: %d No existe%n" + numemp);
+        } catch (Exception ex) {
+            System.out.println("Empleado a eliminar: %d No existe%n" + numemp +"-" +ex.getMessage());
         } finally {
             NeodatisDAOFactory.cerrarConexion();
         }
         return valor;
     }
-    
+
     /**
      * Método que modifica un empleado
      *
@@ -102,13 +103,12 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
         }
         return valor;
     }
-    
-    
+
     /**
      * Método que busca en bbdd el empleado cuyo número se pasa por parámetro
      *
      * @param numemp número del empleado a consultar
-     * @return 
+     * @return
      */
     @Override
     public Empleado consultarEmp(int numemp) {
@@ -133,8 +133,8 @@ public class NeodatisEmpleadoImp implements EmpleadoDAO {
         }
         return emp;
     }
-    
-      /**
+
+    /**
      * Método que lista todos los empleados que hay en bbdd
      *
      * @return devuelve un arraylist con todos los empelados

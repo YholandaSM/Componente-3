@@ -8,6 +8,7 @@ import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 
 /**
+ * Clase con métodos para la conexión a Neodatis
  *
  * @author Hp
  */
@@ -18,7 +19,13 @@ public class NeodatisDAOFactory extends DAOFactory {
     public NeodatisDAOFactory() {
 
     }
-
+    
+    
+    /**
+     * Método que crea una conexión a una bbdd Neodatis
+     *
+     * @return devuelve un objeto Connection
+     */
     public static ODB crearConexion() {
         if (odb == null) {
             odb = ODBFactory.open("C:\\MiBBDD\\Empleado.BD");
@@ -26,10 +33,9 @@ public class NeodatisDAOFactory extends DAOFactory {
         return odb;
     }
 
-     /**
-     * Método que devuelve una instancia del objeto empleado
-     * que implementará los métodos definidos en la interfaz EmpleadoDAO() .
-     * de la interfaz
+    /**
+     * Método que devuelve una instancia del objeto empleado que implementará
+     * los métodos definidos en la interfaz EmpleadoDAO() . de la interfaz
      *
      * @return
      */
@@ -37,8 +43,8 @@ public class NeodatisDAOFactory extends DAOFactory {
     public EmpleadoDAO getEmpleadoDAO() {
         return new NeodatisEmpleadoImp(); //To change body of generated methods, choose Tools | Templates.
     }
-    
-     /**
+
+    /**
      * Método que devuelve una instancia del objeto departamento que
      * implementará los métodos definidos en la interfaz DepartamentoDAO() . de
      * la interfaz
@@ -49,7 +55,10 @@ public class NeodatisDAOFactory extends DAOFactory {
     public DepartamentoDAO getDepartamentoDAO() {
         return new NeodatisDepartamentoImpl(); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    /**
+     * Método para cerrar la conexión con la bbdd Neodatis
+     */
     public static void cerrarConexion() {
         if (odb != null) {
             odb.close();

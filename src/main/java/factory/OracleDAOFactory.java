@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
+ * Clase con métodos para la conexión a Oracle
  *
  * @author Hp
  */
@@ -40,7 +41,7 @@ public class OracleDAOFactory extends DAOFactory {
             }
 
             try {
-                conexion = DriverManager.getConnection("jdbc:oracle:thin:1521:XE", "ejemplo", "ejemplo");
+                conexion = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "HR", "oracle");
             } catch (SQLException e) {
 
                 System.out.println("Error " + e.getMessage() + "-" + e.getSQLState());
